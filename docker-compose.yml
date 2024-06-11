@@ -1,0 +1,6 @@
+﻿services:
+  redmango_api:
+    image: redmango_api
+    build:
+      context: .
+      dockerfile: Dockerfile
