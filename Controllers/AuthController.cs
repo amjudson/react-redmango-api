@@ -37,7 +37,7 @@ public class AuthController(
 		if (!validPassword)
 		{
 			response.Result = new LoginResponseDto();
-			response.IsSuccess = false;
+			response.Success = false;
 			response.StatusCode = HttpStatusCode.BadRequest;
 			response.ErrorMessages.Add("Invalid username or password");
 			return BadRequest(response);
@@ -70,14 +70,14 @@ public class AuthController(
 		if (loginResponse.Email == null || string.IsNullOrEmpty(loginResponse.Token))
 		{
 			response.Result = new LoginResponseDto();
-			response.IsSuccess = false;
+			response.Success = false;
 			response.StatusCode = HttpStatusCode.BadRequest;
 			response.ErrorMessages.Add("Invalid username or password");
 			return BadRequest(response);
 		}
 
 		response.StatusCode = HttpStatusCode.OK;
-		response.IsSuccess = true;
+		response.Success = true;
 		response.Result = loginResponse;
 		return Ok(response);
 	}
@@ -89,7 +89,7 @@ public class AuthController(
 			.FirstOrDefaultAsync(u => u.UserName.ToLower() == model.Username.ToLower());
 		if (userFromDb != null)
 		{
-			response.IsSuccess = false;
+			response.Success = false;
 			response.StatusCode = HttpStatusCode.BadRequest;
 			response.ErrorMessages.Add("User already exists");
 			return BadRequest(response);
@@ -133,7 +133,7 @@ public class AuthController(
 			response.ErrorMessages.Add($"User creation failed for {model.Username}\n{e.Message}");
 		}
 
-		response.IsSuccess = false;
+		response.Success = false;
 		response.StatusCode = HttpStatusCode.BadRequest;
 		response.ErrorMessages.Add($"User creation failed for {model.Username}, please check the data provided");
 		return BadRequest(response);
