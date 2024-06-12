@@ -38,7 +38,7 @@ public class MenuItemController : ControllerBase
 	{
 		if (id <= 0)
 		{
-			response.IsSuccess = false;
+			response.Success = false;
 			response.StatusCode = HttpStatusCode.BadRequest;
 			response.ErrorMessages.Add($"Invalid Id: {id}");
 			return BadRequest(response);
@@ -47,7 +47,7 @@ public class MenuItemController : ControllerBase
 		var menuItem = await db.MenuItems.FirstOrDefaultAsync(x => x.Id == id);
 		if (menuItem == null)
 		{
-			response.IsSuccess = false;
+			response.Success = false;
 			response.StatusCode = HttpStatusCode.BadRequest;
 			response.ErrorMessages.Add($"Menu Item '{id}' not found");
 			return BadRequest(response);
@@ -89,14 +89,14 @@ public class MenuItemController : ControllerBase
 			}
 			else
 			{
-				response.IsSuccess = false;
+				response.Success = false;
 				response.StatusCode = HttpStatusCode.BadRequest;
 				response.ErrorMessages.Add("Invalid Model State");
 			}
 		}
 		catch (Exception e)
 		{
-			response.IsSuccess = false;
+			response.Success = false;
 			response.ErrorMessages.Add(e.ToString());
 		}
 
@@ -112,7 +112,7 @@ public class MenuItemController : ControllerBase
 			{
 				if (menuItemUpdateDto == null || id != menuItemUpdateDto.Id)
 				{
-					response.IsSuccess = false;
+					response.Success = false;
 					response.StatusCode = HttpStatusCode.BadRequest;
 					response.ErrorMessages.Add($"Menu Item '{id}' invalid");
 					return BadRequest();
@@ -121,7 +121,7 @@ public class MenuItemController : ControllerBase
 				var menuItemFromDb = await db.MenuItems.FindAsync(id);
 				if (menuItemFromDb == null)
 				{
-					response.IsSuccess = false;
+					response.Success = false;
 					response.StatusCode = HttpStatusCode.NotFound;
 					response.ErrorMessages.Add("Menu Item not found");
 					return NotFound(response);
@@ -148,7 +148,7 @@ public class MenuItemController : ControllerBase
 		}
 		catch (Exception e)
 		{
-			response.IsSuccess = false;
+			response.Success = false;
 			response.ErrorMessages.Add(e.ToString());
 		}
 
@@ -162,7 +162,7 @@ public class MenuItemController : ControllerBase
 		{
 				if (id == 0)
 				{
-					response.IsSuccess = false;
+					response.Success = false;
 					response.StatusCode = HttpStatusCode.BadRequest;
 					response.ErrorMessages.Add($"Menu Item '{id}' invalid");
 					return BadRequest();
@@ -171,7 +171,7 @@ public class MenuItemController : ControllerBase
 				var menuItemFromDb = await db.MenuItems.FindAsync(id);
 				if (menuItemFromDb == null)
 				{
-					response.IsSuccess = false;
+					response.Success = false;
 					response.StatusCode = HttpStatusCode.NotFound;
 					response.ErrorMessages.Add($"Menu Item '{id}' not found");
 					return NotFound(response);
@@ -185,7 +185,7 @@ public class MenuItemController : ControllerBase
 		}
 		catch (Exception e)
 		{
-			response.IsSuccess = false;
+			response.Success = false;
 			response.ErrorMessages.Add(e.ToString());
 		}
 
