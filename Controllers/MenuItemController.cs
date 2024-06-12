@@ -12,18 +12,9 @@ namespace RedMango_API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class MenuItemController : ControllerBase
+public class MenuItemController(ApplicationDbContext db, IBlobService blobService) : ControllerBase
 {
-	private readonly ApplicationDbContext db;
-	private readonly IBlobService blobService;
-	private ApiResponse response;
-
-	public MenuItemController(ApplicationDbContext db, IBlobService blobService)
-	{
-		this.db = db;
-		this.blobService = blobService;
-		response = new ApiResponse();
-	}
+	private ApiResponse response = new();
 
 	[HttpGet]
 	public async Task<IActionResult> GetMenuItems()
