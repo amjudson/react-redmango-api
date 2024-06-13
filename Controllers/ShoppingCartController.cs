@@ -18,18 +18,21 @@ public class ShoppingCartController(ApplicationDbContext db) : ControllerBase
 	{
 		try
 		{
-			if (string.IsNullOrEmpty(userId))
-			{
-				response.StatusCode = HttpStatusCode.BadRequest;
-				response.Success = false;
-				response.ErrorMessages.Add("Invalid User Id");
-				return BadRequest(response);
-			}
+			//
+			// if (string.IsNullOrEmpty(userId))
+			// {
+			// 	response.StatusCode = HttpStatusCode.BadRequest;
+			// 	response.Success = false;
+			// 	response.ErrorMessages.Add("Invalid User Id");
+			// 	return BadRequest(response);
+			// }
 
-			var shoppingCart = await db.ShoppingCarts
+			var shoppingCart = !string.IsNullOrEmpty(userId)
+				? await db.ShoppingCarts
 				.Include(s => s.CartItems)
 				.ThenInclude(c => c.MenuItem)
-				.FirstOrDefaultAsync(u => u.UserId == userId);
+				.FirstOrDefaultAsync(u => u.UserId == userId)
+				: new ShoppingCart();
 
 			if (shoppingCart != null && shoppingCart.CartItems.Count > 0)
 			{
