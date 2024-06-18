@@ -7,6 +7,7 @@ using RedMango_API.Models;
 using RedMango_API.Models.Dto;
 using RedMango_API.Utility;
 using System.Net;
+using System.Text.Json;
 
 namespace RedMango_API.Controllers;
 
@@ -18,17 +19,43 @@ public class OrderController(ApplicationDbContext db) : ControllerBase
 
 	[Authorize]
 	[HttpGet]
-	public async Task<ActionResult<ApiResponse>> GetOrders(string? userId)
+	public async Task<ActionResult<ApiResponse>> GetOrders(string? userId, string searchString, string status, int pageNumber = 1, int pageSize = 5)
 	{
 		try
 		{
-			var orderHeaders = db.OrderHeaders
+			IEnumerable<OrderHeader> orderHeaders =
+				db.OrderHeaders
 				.Include(o => o.OrderDetails)
 				.ThenInclude(m => m.MenuItem)
 				.OrderByDescending(o => o.OrderHeaderId);
-			response.Result = !string.IsNullOrEmpty(userId)
-				? orderHeaders.Where(o => o.ApplicationUserId == userId)
-				: orderHeaders;
+			if (!string.IsNullOrEmpty(userId))
+			{
+				orderHeaders = orderHeaders.Where(o => o.ApplicationUserId == userId);
+			}
+
+			if (!string.IsNullOrEmpty(searchString))
+			{
+				orderHeaders = orderHeaders.Where(o =>
+					o.PickupName.ToLower().Contains(searchString.ToLower()) ||
+					o.PickupEmail.ToLower().Contains(searchString.ToLower()) ||
+					o.PickupPhoneNumber.ToLower().Contains(searchString.ToLower()));
+			}
+
+			if (!string.IsNullOrEmpty(status))
+			{
+				orderHeaders = orderHeaders.Where(o => o.Status.ToLower() == status.ToLower());
+			}
+
+			var pagination = new Pagination
+			{
+				CurrentPage = pageNumber,
+				PageSize = pageSize,
+				TotalRecords = orderHeaders.Count(),
+			};
+
+			Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(pagination));
+
+			response.Result = orderHeaders.Skip((pageNumber - 1) * pageSize).Take(pageSize);
 			response.StatusCode = HttpStatusCode.OK;
 			response.Success = true;
 			return Ok(response);
