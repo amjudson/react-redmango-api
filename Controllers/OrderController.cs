@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,7 @@ public class OrderController(ApplicationDbContext db) : ControllerBase
 {
 	private readonly ApiResponse response = new();
 
+	[Authorize]
 	[HttpGet]
 	public async Task<ActionResult<ApiResponse>> GetOrders(string? userId)
 	{
