@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -49,6 +50,7 @@ public class MenuItemController(ApplicationDbContext db, IBlobService blobServic
 		return Ok(response);
 	}
 
+	[Authorize(Roles = SD.Role_Admin)]
 	[HttpPost]
 	public async Task<ActionResult<ApiResponse>> CreateMenuItem([FromForm] MenuItemCreateDto menuItemCreateDto)
 	{
@@ -94,6 +96,7 @@ public class MenuItemController(ApplicationDbContext db, IBlobService blobServic
 		return response;
 	}
 
+	[Authorize(Roles = SD.Role_Admin)]
 	[HttpPut("{id:int}")]
 	public async Task<ActionResult<ApiResponse>> UpdateMenuItem(int id, [FromForm] MenuItemUpdateDto menuItemUpdateDto)
 	{
@@ -146,6 +149,7 @@ public class MenuItemController(ApplicationDbContext db, IBlobService blobServic
 		return response;
 	}
 
+	[Authorize(Roles = SD.Role_Admin)]
 	[HttpDelete("{id:int}")]
 	public async Task<ActionResult<ApiResponse>> DeleteMenuItem(int id)
 	{
